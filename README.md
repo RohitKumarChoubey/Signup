@@ -157,3 +157,6 @@ Email Verification
 
 This project is developed for educational purposes.
 Free to use and modify.
+
+My Frontend Link : http://signup-frontend-rohit-2026.s3-website.eu-north-1.amazonaws.com/
+Backend Link : http://signupbackend-env.eba-bxedaebc.eu-north-1.elasticbeanstalk.com/users
