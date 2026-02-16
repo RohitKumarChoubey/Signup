@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup System</title>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            font-family: monospace, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 5px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+        }
+
+        .tabs button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            background: #ddd;
+        }
+
+        .tabs button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button.register-btn {
+            width: 100%;
+            padding: 10px;
+            background: #667eeb;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .user-card {
+            background: #f3f3f3;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="tabs">
+        <button id="signupTab" class="active" onclick="showSignup()">Signup</button>
+        <button id="usersTab" onclick="showUsers()">View Users</button>
+    </div>
+
+    <div class="content">
+
+        <!-- SIGNUP SECTION -->
+        <div id="signupSection">
+            <h3>Signup Form</h3>
+
+            <input type="text" id="name" placeholder="Enter Name">
+            <input type="email" id="email" placeholder="Enter Email">
+            <input type="text" id="contact" placeholder="Enter Contact">
+            <input type="password" id="password" placeholder="Enter Password">
+
+            <button class="register-btn" onclick="registerUser()">Register</button>
+        </div>
+
+        <!-- USERS SECTION -->
+        <div id="usersSection" class="hidden">
+            <h3>Registered Users</h3>
+            <div id="usersList"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+const backendURL = "http://signupbackend-env.eba-bxedaebc.eu-north-1.elasticbeanstalk.com";
+
+function showSignup() {
+    document.getElementById("signupSection").classList.remove("hidden");
+    document.getElementById("usersSection").classList.add("hidden");
+
+    document.getElementById("signupTab").classList.add("active");
+    document.getElementById("usersTab").classList.remove("active");
+}
+
+function showUsers() {
+    document.getElementById("signupSection").classList.add("hidden");
+    document.getElementById("usersSection").classList.remove("hidden");
+
+    document.getElementById("signupTab").classList.remove("active");
+    document.getElementById("usersTab").classList.add("active");
+
+    loadUsers();
+}
+
+async function registerUser() {
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const contact = document.getElementById("contact").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!name || !email || !contact || !password) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    const user = {
+        name: name,
+        email: email,
+        contact: contact,
+        password: password
+    };
+
+    console.log("Sending:", user);
+
+    await fetch(backendURL + "/signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+    });
+
+    alert("Registered Successfully!");
+
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("contact").value = "";
+    document.getElementById("password").value = "";
+
+    showUsers();
+}
+
+async function loadUsers() {
+
+    const response = await fetch(backendURL + "/users");
+    const users = await response.json();
+
+    const usersList = document.getElementById("usersList");
+    usersList.innerHTML = "";
+
+    users.forEach(user => {
+
+        const card = document.createElement("div");
+        card.className = "user-card";
+
+        card.innerHTML = `
+            <div class="user-name">${user.name || "No Name"}</div>
+            <div>${user.email}</div>
+        `;
+
+        usersList.appendChild(card);
+    });
+}
+
+</script>
+
+</body>
+</html>
