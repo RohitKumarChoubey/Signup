@@ -1,4 +1,4 @@
-<img width="1920" height="1032" alt="image" src="https://github.com/user-attachments/assets/c5d48f76-00b2-408e-8a3b-fc1ec534b448" />🚀 SignUp System
+🚀 SignUp System
 
 A simple SignUp & Registration System built with a frontend hosted on AWS S3 and a backend deployed using AWS Elastic Beanstalk. This project allows users to register and store their information securely.
 
